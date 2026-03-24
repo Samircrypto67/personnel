@@ -126,14 +126,37 @@ public class GestionPersonnel
         return passerelle.insert(employe);
     }
 
-    // ---------------- Création du root ----------------
+    package personnel;
+
+public class GestionPersonnel
+{
+    private Passerelle passerelle;
+    private Employe root;
+
+    public GestionPersonnel(Passerelle passerelle)
+    {
+        this.passerelle = passerelle;
+    }
+
+    //  Créer root
     public void addRoot(String nom, String prenom, String mail, String password) throws SauvegardeImpossible
     {
-        if (root != null && root.getId() != -1) return; // root déjà créé
+        if (root != null && root.getId() != -1) return; // root déjà existant
         root = new Employe(this, null, nom, prenom, mail, password);
-        int rootId = insert(root);
+        int rootId = passerelle.insert(root); // insertion en BDD
         root.setId(rootId);
     }
 
+    //  Créer root depuis BDD 
+    public void addRoot(int id, String nom, String prenom, String mail, String password)
+    {
+        root = new Employe(this, null, id, nom, prenom, mail, password);
+    }
+
     public Employe getRoot() { return root; }
+
+    public int insert(Employe employe) throws SauvegardeImpossible
+    {
+        return passerelle.insert(employe);
+    }
 }
