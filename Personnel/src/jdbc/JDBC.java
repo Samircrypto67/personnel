@@ -45,12 +45,9 @@ public class JDBC implements Passerelle
                 gestionPersonnel.addLigue(rsLigue.getInt("id"), rsLigue.getString("nom"));
 
             //  Charger le root
-            String requeteRoot = "SELECT * FROM employe WHERE id_ligue IS NULL LIMIT 1";
+                String requeteRoot = "SELECT * FROM employe WHERE id_ligue IS NULL LIMIT 1";
             Statement stmtRoot = connection.createStatement();
-          // Chargement du root depuis la base
-           // Chargement du root depuis la base (conforme MCD)
-            ResultSet rootRS = instruction.executeQuery("SELECT * FROM employe WHERE ligue_id IS NULL");
-
+            ResultSet rsRoot = stmtRoot.executeQuery(requeteRoot);
             if (rootRS.next())
             {
                 gestionPersonnel.addRoot(
@@ -59,6 +56,8 @@ public class JDBC implements Passerelle
                     rootRS.getString("prenom"),
                     rootRS.getString("mail"),
                     rootRS.getString("password")
+                    rootRS.getInt("date_arrivee"),
+                    rootRS.getInt("date_depart")
                 );
              }
             
