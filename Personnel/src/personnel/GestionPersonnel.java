@@ -152,6 +152,7 @@ public class GestionPersonnel
     {
         root = new Employe(this, null, id, nom, prenom, mail, password);
     }
+	
 
     public Employe getRoot() { return root; }
 
@@ -159,10 +160,11 @@ public class GestionPersonnel
     {
         return passerelle.insert(employe);
     }
-}
+	}
 
-//ajoute de la methode update 
-public void update(Ligue ligue) throws SauvegardeImpossible
-{
-    passerelle.update(ligue);
+	//ajoute de la methode update 
+	public void update(Ligue ligue) throws SauvegardeImpossible
+	{
+		passerelle.update(ligue);
+	}
 }

@@ -47,17 +47,21 @@ public class JDBC implements Passerelle
             //  Charger le root
             String requeteRoot = "SELECT * FROM employe WHERE id_ligue IS NULL LIMIT 1";
             Statement stmtRoot = connection.createStatement();
-            ResultSet rsRoot = stmtRoot.executeQuery(requeteRoot);
-            if (rsRoot.next())
+          // Chargement du root depuis la base
+           // Chargement du root depuis la base (conforme MCD)
+            ResultSet rootRS = instruction.executeQuery("SELECT * FROM employe WHERE ligue_id IS NULL");
+
+            if (rootRS.next())
             {
                 gestionPersonnel.addRoot(
-                    rsRoot.getInt("id"),
-                    rsRoot.getString("nom"),
-                    rsRoot.getString("prenom"),
-                    rsRoot.getString("mail"),
-                    rsRoot.getString("password")
+                    rootRS.getInt("id"),
+                    rootRS.getString("nom"),
+                    rootRS.getString("prenom"),
+                    rootRS.getString("mail"),
+                    rootRS.getString("password")
                 );
-            }
+             }
+            
         }
         catch (SQLException e)
         {
