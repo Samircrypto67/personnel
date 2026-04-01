@@ -3,68 +3,43 @@ package personnel;
 import java.io.Serializable;
 
 public class Employe implements Serializable, Comparable<Employe> {
-
-    private static final long serialVersionUID = 4795721718037994734L;
-
-    private int id = -1; // id pour la BDD
-    private String nom, prenom, password, mail;
-    private java.sql.Date dateArrivee, dateDepart;
+    private int id = -1;
+    private String nom, prenom, mail, password;
     private Ligue ligue;
-    private GestionPersonnel gestionPersonnel;
+    private GestionPersonnel gestion;
 
-    // Constructeur normal
-    public Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
-                   String mail, String password, java.sql.Date dateArrivee, java.sql.Date dateDepart) {
-        this.gestionPersonnel = gestionPersonnel;
+    public Employe(GestionPersonnel gestion, Ligue ligue, String nom, String prenom, String mail, String password) {
+        this.gestion = gestion;
         this.ligue = ligue;
         this.nom = nom;
         this.prenom = prenom;
         this.mail = mail;
         this.password = password;
-        this.dateArrivee = dateArrivee;
-        this.dateDepart = dateDepart;
     }
 
-    // Constructeur pour charger depuis BDD
-    public Employe(GestionPersonnel gestionPersonnel, Ligue ligue, int id, String nom, String prenom,
-                   String mail, String password, java.sql.Date dateArrivee, java.sql.Date dateDepart) {
-        this(gestionPersonnel, ligue, nom, prenom, mail, password, dateArrivee, dateDepart);
-        this.id = id;
-    }
-
-    // Ajout de Getters et setters avec update automatique.
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; try { gestionPersonnel.update(this); } catch (Exception e) {} }
+    public void setNom(String nom) { this.nom = nom; }
     public String getPrenom() { return prenom; }
-    public void setPrenom(String prenom) { this.prenom = prenom; try { gestionPersonnel.update(this); } catch (Exception e) {} }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
     public String getMail() { return mail; }
-    public void setMail(String mail) { this.mail = mail; try { gestionPersonnel.update(this); } catch (Exception e) {} }
+    public void setMail(String mail) { this.mail = mail; }
     public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; try { gestionPersonnel.update(this); } catch (Exception e) {} }
+    public void setPassword(String password) { this.password = password; }
     public Ligue getLigue() { return ligue; }
-    public void setLigue(Ligue ligue) { this.ligue = ligue; try { gestionPersonnel.update(this); } catch (Exception e) {} }
-    public java.sql.Date getDateArrivee() { return dateArrivee; }
-    public void setDateArrivee(java.sql.Date dateArrivee) { this.dateArrivee = dateArrivee; try { gestionPersonnel.update(this); } catch (Exception e) {} }
-    public java.sql.Date getDateDepart() { return dateDepart; }
-    public void setDateDepart(java.sql.Date dateDepart) { this.dateDepart = dateDepart; try { gestionPersonnel.update(this); } catch (Exception e) {} }
+    public GestionPersonnel getGestionPersonnel() { return gestion; }
 
-    public boolean estRoot() { return gestionPersonnel.getRoot() == this; }
+    public boolean estRoot() { return this == gestion.getRoot(); }
+    public boolean checkPassword(String pwd) { return password.equals(pwd); }
 
     @Override
-    public int compareTo(Employe autre) {
-        int cmp = getNom().compareTo(autre.getNom());
+    public int compareTo(Employe o) {
+        int cmp = nom.compareTo(o.nom);
         if (cmp != 0) return cmp;
-        return getPrenom().compareTo(autre.getPrenom());
+        return prenom.compareTo(o.prenom);
     }
 
     @Override
-    public String toString() {
-        String res = nom + " " + prenom + " " + mail + " (";
-        if (estRoot())
-            res += "super-utilisateur";
-        else
-            res += ligue.toString();
-        return res + ")";
-    }
+    public String toString() { return nom + " " + prenom + " (" + mail + ")"; }
 }

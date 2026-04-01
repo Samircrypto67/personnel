@@ -1,144 +1,54 @@
 package commandLine;
 
-import static commandLineMenus.rendering.examples.util.InOut.getString;
-
-import java.util.ArrayList;
-
-import commandLineMenus.List;
-import commandLineMenus.Menu;
-import commandLineMenus.Option;
-
 import personnel.*;
+import commandLineMenus.*;
 
-public class LigueConsole 
-{
-	private GestionPersonnel gestionPersonnel;
-	private EmployeConsole employeConsole;
+import static commandLineMenus.rendering.examples.util.InOut.*;
 
-	public LigueConsole(GestionPersonnel gestionPersonnel, EmployeConsole employeConsole)
-	{
-		this.gestionPersonnel = gestionPersonnel;
-		this.employeConsole = employeConsole;
-	}
+public class LigueConsole {
 
-	Menu menuLigues()
-	{
-		Menu menu = new Menu("Gérer les ligues", "l");
-		menu.add(afficherLigues());
-		menu.add(ajouterLigue());
-		menu.add(selectionnerLigue());
-		menu.addBack("q");
-		return menu;
-	}
+    private GestionPersonnel gestion;
+    private EmployeConsole employeConsole;
 
-	private Option afficherLigues()
-	{
-		return new Option("Afficher les ligues", "l", () -> {System.out.println(gestionPersonnel.getLigues());});
-	}
+    public LigueConsole(GestionPersonnel gestion, EmployeConsole employeConsole) {
+        this.gestion = gestion;
+        this.employeConsole = employeConsole;
+    }
 
-	private Option afficher(final Ligue ligue)
-	{
-		return new Option("Afficher la ligue", "l", 
-				() -> 
-				{
-					System.out.println(ligue);
-					System.out.println("administrée par " + ligue.getAdministrateur());
-				}
-		);
-	}
-	private Option afficherEmployes(final Ligue ligue)
-	{
-		return new Option("Afficher les employes", "l", () -> {System.out.println(ligue.getEmployes());});
-	}
+    public Menu menuLigues() {
+        Menu menu = new Menu("Gestion des ligues", "l");
+        for (Ligue l : gestion.getLigues()) {
+            menu.add(new Option(l.getNom(), "" + l.getId(), () -> menuLigue(l).start()));
+        }
+        menu.add(new Option("Ajouter une ligue", "a", () -> ajouterLigue()));
+        menu.addBack("r");
+        return menu;
+    }
 
-	private Option ajouterLigue()
-	{
-		return new Option("Ajouter une ligue", "a", () -> 
-		{
-			try
-			{
-				gestionPersonnel.addLigue(getString("nom : "));
-			}
-			catch(SauvegardeImpossible exception)
-			{
-				System.err.println("Impossible de sauvegarder cette ligue");
-			}
-		});
-	}
-	
-	private Menu editerLigue(Ligue ligue)
-	{
-		Menu menu = new Menu("Editer " + ligue.getNom());
-		menu.add(afficher(ligue));
-		menu.add(gererEmployes(ligue));
-		//menu.add(changerAdministrateur(ligue));
-		menu.add(changerNom(ligue));
-		menu.add(supprimer(ligue));
-		menu.addBack("q");
-		return menu;
-	}
+    private Menu menuLigue(Ligue ligue) {
+        Menu menu = new Menu("Ligue : " + ligue.getNom());
+        menu.add(new Option("Modifier ligue", "1", () -> modifierLigue(ligue)));
+        menu.add(new Option("Supprimer ligue", "2", () -> supprimerLigue(ligue)));
+        return menu;
+    }
 
-	private Option changerNom(final Ligue ligue)
-	{
-		return new Option("Renommer", "r", 
-				() -> {ligue.setNom(getString("Nouveau nom : "));});
-	}
+    private void ajouterLigue() {
+        String nom = getString("Nom de la ligue : ");
+        try {
+            gestion.addLigue(nom);
+        } catch (SauvegardeImpossible e) {
+            System.out.println("Impossible d'ajouter la ligue.");
+        }
+    }
 
-	private List<Ligue> selectionnerLigue()
-	{
-		return new List<Ligue>("Sélectionner une ligue", "e", 
-				() -> new ArrayList<>(gestionPersonnel.getLigues()),
-				(element) -> editerLigue(element)
-				);
-	}
-	
-	private Option ajouterEmploye(final Ligue ligue)
-	{
-		return new Option("ajouter un employé", "a",
-				() -> 
-				{
-					ligue.addEmploye(getString("nom : "), 
-						getString("prenom : "), getString("mail : "), 
-						getString("password : "));
-				}
-		);
-	}
-	
-	private Menu gererEmployes(Ligue ligue)
-	{
-		Menu menu = new Menu("Gérer les employés de " + ligue.getNom(), "e");
-		menu.add(afficherEmployes(ligue));
-		menu.add(ajouterEmploye(ligue));
-		menu.add(modifierEmploye(ligue));
-		menu.add(supprimerEmploye(ligue));
-		menu.addBack("q");
-		return menu;
-	}
+    private void modifierLigue(Ligue ligue) {
+        String nom = getString("Nouveau nom : ");
+        ligue.setNom(nom);
+        try { gestion.updateLigue(ligue); } catch (SauvegardeImpossible e) { System.out.println("Impossible de modifier."); }
+    }
 
-	private List<Employe> supprimerEmploye(final Ligue ligue)
-	{
-		return new List<>("Supprimer un employé", "s", 
-				() -> new ArrayList<>(ligue.getEmployes()),
-				(index, element) -> {element.remove();}
-				);
-	}
-	
-	private List<Employe> changerAdministrateur(final Ligue ligue)
-	{
-		return null;
-	}		
-
-	private List<Employe> modifierEmploye(final Ligue ligue)
-	{
-		return new List<>("Modifier un employé", "e", 
-				() -> new ArrayList<>(ligue.getEmployes()),
-				employeConsole.editerEmploye()
-				);
-	}
-	
-	private Option supprimer(Ligue ligue)
-	{
-		return new Option("Supprimer", "d", () -> {ligue.remove();});
-	}
-	
+    private void supprimerLigue(Ligue ligue) {
+        gestion.removeLigue(ligue);
+        System.out.println("Ligue supprimée.");
+    }
 }

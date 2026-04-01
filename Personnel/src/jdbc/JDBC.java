@@ -140,7 +140,7 @@ public class JDBC implements Passerelle
         }
     }
 }
-//Implementation de la methode update 
+//Implementation de la methode update .
 @Override
 public void update(Ligue ligue) throws SauvegardeImpossible 
 {
