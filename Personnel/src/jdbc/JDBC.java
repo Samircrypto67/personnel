@@ -139,8 +139,8 @@ public class JDBC implements Passerelle
             throw new SauvegardeImpossible(exception);
         }
     }
-}
-//Implementation de la methode update .
+//  Implementation de la methode update .
+//Implementation de la methode update Ligue
 @Override
 public void update(Ligue ligue) throws SauvegardeImpossible 
 {
@@ -160,3 +160,38 @@ public void update(Ligue ligue) throws SauvegardeImpossible
         throw new SauvegardeImpossible(exception);
     }       
 }
+}
+
+// Implementation de la methode update Employes
+@Override
+public void update(Employe employe) throws SauvegardeImpossible
+{
+    try
+    {
+        PreparedStatement instruction = connection.prepareStatement(
+            "UPDATE employe SET nom=?, prenom=?, mail=?, password=?, date_arrivee=?, date_depart=?, id_ligue=? WHERE id=?"
+        );
+
+        instruction.setString(1, employe.getNom());
+        instruction.setString(2, employe.getPrenom());
+        instruction.setString(3, employe.getMail());
+        instruction.setString(4, employe.getPassword());
+        instruction.setDate(5, employe.getDateArrivee());
+        instruction.setDate(6, employe.getDateDepart());
+
+        if (employe.getLigue() != null)
+            instruction.setInt(7, employe.getLigue().getId());
+        else
+            instruction.setNull(7, java.sql.Types.INTEGER);
+
+        instruction.setInt(8, employe.getId());
+
+        instruction.executeUpdate();
+    }
+    catch(SQLException e)
+    {
+        e.printStackTrace();
+        throw new SauvegardeImpossible(e);
+    }
+}
+
