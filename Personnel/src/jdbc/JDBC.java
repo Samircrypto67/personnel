@@ -37,6 +37,7 @@ public class JDBC implements Passerelle
 
         try 
         {
+        
             //  Charger toutes les ligues 
             String requeteLigue = "SELECT * FROM ligue";
             Statement stmtLigue = connection.createStatement();
@@ -45,9 +46,10 @@ public class JDBC implements Passerelle
                 gestionPersonnel.addLigue(rsLigue.getInt("id"), rsLigue.getString("nom"));
 
             //  Charger le root
-                String requeteRoot = "SELECT * FROM employe WHERE id_ligue IS NULL LIMIT 1";
+            String requeteRoot = "SELECT * FROM employe WHERE id_ligue IS NULL LIMIT 1";
             Statement stmtRoot = connection.createStatement();
-            ResultSet rsRoot = stmtRoot.executeQuery(requeteRoot);
+            ResultSet rootRS = stmtRoot.executeQuery(requeteRoot);
+
             if (rootRS.next())
             {
                 gestionPersonnel.addRoot(
@@ -56,9 +58,46 @@ public class JDBC implements Passerelle
                     rootRS.getString("prenom"),
                     rootRS.getString("mail"),
                     rootRS.getString("password")
-                    rootRS.getInt("date_arrivee"),
-                    rootRS.getInt("date_depart")
                 );
+            };
+
+            //  ETAPE 7 : charger les employés avec jointure
+            String requeteJointure = "SELECT l.id AS ligue_id, l.nom AS ligue_nom, " +"e.id AS emp_id, e.nom AS emp_nom, e.prenom, e.mail, e.password " +"FROM ligue l LEFT JOIN employe e ON l.id = e.id_ligue";
+            Statement stmtJointure = connection.createStatement();
+            ResultSet rsJointure = stmtJointure.executeQuery(requeteJointure);
+            Ligue ligueCourante = null;
+            int currentLigueId = -1;
+
+            while (rsJointure.next())
+                {
+                    int ligueId = rsJointure.getInt("ligue_id");
+
+                    // récupérer la ligue
+                    if (ligueId != currentLigueId)
+                        {
+                            ligueCourante = gestionPersonnel.addLigue(
+                                ligueId,
+                                rsJointure.getString("ligue_nom")
+                            );
+                            currentLigueId = ligueId;
+                        }
+
+                        // créer employé
+                        if (rsJointure.getObject("emp_id") != null)
+                        {
+                            Employe employe = new Employe(
+                                gestionPersonnel,
+                                ligueCourante,
+                                rsJointure.getInt("employé_id"),
+                                rsJointure.getString("employé_nom"),
+                                rsJointure.getString("prenom"),
+                                rsJointure.getString("mail"),
+                                rsJointure.getString("password")
+                            );
+
+                            ligueCourante.addEmploye(employe);
+                        }
+                    }
              }
             
         }
@@ -69,6 +108,7 @@ public class JDBC implements Passerelle
 
         return gestionPersonnel;
     }
+    
 
     @Override
     public void sauvegarderGestionPersonnel(GestionPersonnel gestionPersonnel) throws SauvegardeImpossible 
