@@ -179,6 +179,26 @@ public class JDBC implements Passerelle
             throw new SauvegardeImpossible(exception);
         }
     }
+
+//supprimer des employés
+@Override
+public void delete(Employe employe) throws SauvegardeImpossible
+{
+    try
+    {
+        PreparedStatement instruction = connection.prepareStatement(
+            "DELETE FROM employe WHERE id=?"
+        );
+        instruction.setInt(1, employe.getId());
+        instruction.executeUpdate();
+    }
+    catch(SQLException e)
+    {
+        e.printStackTrace();
+        throw new SauvegardeImpossible(e);
+    }
+}
+
 //  Implementation de la methode update .
 //Implementation de la methode update Ligue
 @Override
@@ -200,7 +220,7 @@ public void update(Ligue ligue) throws SauvegardeImpossible
         throw new SauvegardeImpossible(exception);
     }       
 }
-}
+
 
 // Implementation de la methode update Employes
 @Override

@@ -174,3 +174,11 @@ public void update(Employe employe) throws SauvegardeImpossible
 {
     passerelle.update(employe);
 }
+
+//ajput de lappel pour supprimer un employé
+public void remove(Employe employe) throws SauvegardeImpossible
+{
+	//appel de la méthode delete de la passerelle
+	passerelle.delete(employe);
+}
+
