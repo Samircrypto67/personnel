@@ -221,7 +221,32 @@ public void update(Ligue ligue) throws SauvegardeImpossible
     }       
 }
 
+//supprimer une ligue 
+@Override
+public void delete(Ligue ligue) throws SauvegardeImpossible
+{
+    try
+    {
+        // Supprimer les employés de la ligue
+        PreparedStatement supEmp = connection.prepareStatement(
+            "DELETE FROM employe WHERE id_ligue=?"
+        );
+        supEmp.setInt(1, ligue.getId());
+        supEmp.executeUpdate();
 
+        // Supprimer la ligue
+        PreparedStatement supLigue = connection.prepareStatement(
+            "DELETE FROM ligue WHERE id=?"
+        );
+        supLigue.setInt(1, ligue.getId());
+        supLigue.executeUpdate();
+    }
+    catch(SQLException e)
+    {
+        e.printStackTrace();
+        throw new SauvegardeImpossible(e);
+    }
+}
 // Implementation de la methode update Employes
 @Override
 public void update(Employe employe) throws SauvegardeImpossible

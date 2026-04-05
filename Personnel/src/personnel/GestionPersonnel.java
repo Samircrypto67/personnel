@@ -182,3 +182,10 @@ public void remove(Employe employe) throws SauvegardeImpossible
 	passerelle.delete(employe);
 }
 
+//supprimer une ligue
+void remove(Ligue ligue) throws SauvegardeImpossible
+{
+    passerelle.delete(ligue);  // Appel à la passerelle
+    ligues.remove(ligue);       // Supprime de ligue 
+}
+
