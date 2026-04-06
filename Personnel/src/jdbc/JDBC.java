@@ -38,13 +38,6 @@ public class JDBC implements Passerelle
         try 
         {
         
-            //  Charger toutes les ligues 
-            String requeteLigue = "SELECT * FROM ligue";
-            Statement stmtLigue = connection.createStatement();
-            ResultSet rsLigue = stmtLigue.executeQuery(requeteLigue);
-            while (rsLigue.next())
-                gestionPersonnel.addLigue(rsLigue.getInt("id"), rsLigue.getString("nom"));
-
             //  Charger le root
             String requeteRoot = "SELECT * FROM employe WHERE id_ligue IS NULL LIMIT 1";
             Statement stmtRoot = connection.createStatement();
@@ -61,44 +54,56 @@ public class JDBC implements Passerelle
                 );
             };
 
-            //  ETAPE 7 : charger les employés avec jointure
-            String requeteJointure = "SELECT l.id AS ligue_id, l.nom AS ligue_nom, " +"e.id AS emp_id, e.nom AS emp_nom, e.prenom, e.mail, e.password " +"FROM ligue l LEFT JOIN employe e ON l.id = e.id_ligue";
+            //  ETAPE 7 + 11 : charger employés + admin
+            String requeteJointure = 
+            "SELECT l.id AS ligue_id, l.nom AS ligue_nom, l.administrateur_id, " +
+            "e.id AS emp_id, e.nom AS emp_nom, e.prenom, e.mail, e.password " +
+            "FROM ligue l LEFT JOIN employe e ON l.id = e.id_ligue";
+
             Statement stmtJointure = connection.createStatement();
             ResultSet rsJointure = stmtJointure.executeQuery(requeteJointure);
+
             Ligue ligueCourante = null;
             int currentLigueId = -1;
 
             while (rsJointure.next())
+            {
+                int ligueId = rsJointure.getInt("ligue_id");
+
+                //  récupérer la ligue UNE SEULE FOIS
+                if (ligueId != currentLigueId)
                 {
-                    int ligueId = rsJointure.getInt("ligue_id");
+                    ligueCourante = gestionPersonnel.addLigue(
+                        ligueId,
+                        rsJointure.getString("ligue_nom")
+                    );
+                    currentLigueId = ligueId;
+                }
 
-                    // récupérer la ligue
-                    if (ligueId != currentLigueId)
-                        {
-                            ligueCourante = gestionPersonnel.addLigue(
-                                ligueId,
-                                rsJointure.getString("ligue_nom")
-                            );
-                            currentLigueId = ligueId;
-                        }
+                int adminId = rsJointure.getInt("administrateur_id");
 
-                        // créer employé
-                        if (rsJointure.getObject("emp_id") != null)
-                        {
-                            Employe employe = new Employe(
-                                gestionPersonnel,
-                                ligueCourante,
-                                rsJointure.getInt("employé_id"),
-                                rsJointure.getString("employé_nom"),
-                                rsJointure.getString("prenom"),
-                                rsJointure.getString("mail"),
-                                rsJointure.getString("password")
-                            );
+                //  créer employé
+                if (rsJointure.getObject("emp_id") != null)
+                {
+                    Employe employe = new Employe(
+                        gestionPersonnel,
+                        ligueCourante,
+                        rsJointure.getInt("emp_id"),
+                        rsJointure.getString("emp_nom"),
+                        rsJointure.getString("prenom"),
+                        rsJointure.getString("mail"),
+                        rsJointure.getString("password")
+                    );
 
-                            ligueCourante.addEmploye(employe);
-                        }
+                    ligueCourante.addEmploye(employe);
+
+                    //  ETAPE 11 : ADMIN
+                    if (employe.getId() == adminId)
+                    {
+                        ligueCourante.setAdministrateur(employe);
                     }
-             }
+                }
+            }
             
         }
         catch (SQLException e)
@@ -280,3 +285,4 @@ public void update(Employe employe) throws SauvegardeImpossible
     }
 }
 
+}

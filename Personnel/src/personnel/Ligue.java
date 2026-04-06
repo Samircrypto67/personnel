@@ -4,6 +4,7 @@ public class Ligue implements Comparable<Ligue> {
     private int id;
     private String nom;
     private GestionPersonnel gp;
+    private Employe administrateur;
 
     public Ligue(GestionPersonnel gp, int id, String nom) {
         this.gp = gp;
@@ -43,3 +44,15 @@ public void remove() {
         e.printStackTrace();
     }
 }
+// Ajout de la méthode addEmploye pour permettre l'ajout d'un employé à une ligue
+private Employe administrateur;
+
+public Employe getAdministrateur() {
+    return administrateur;
+}
+
+public void setAdministrateur(Employe administrateur) {
+    this.administrateur = administrateur;
+}
+
+
