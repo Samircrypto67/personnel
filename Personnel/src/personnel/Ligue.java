@@ -51,8 +51,18 @@ public Employe getAdministrateur() {
     return administrateur;
 }
 
-public void setAdministrateur(Employe administrateur) {
+public void setAdministrateur(Employe administrateur)
+{
     this.administrateur = administrateur;
+
+    try
+    {
+        gp.updateAdministrateur(this); // appel BDD
+    }
+    catch (SauvegardeImpossible e)
+    {
+        e.printStackTrace();
+    }
 }
 
 

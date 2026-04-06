@@ -9,5 +9,8 @@ public interface Passerelle
 	public  int update(Ligue ligue) throws SauvegardeImpossible;
     
     // 🔹 Nouvelle méthode pour modifier un employé
-    void update(Employe employe) throws SauvegardeImpossible;
+    public void update(Employe employe) throws SauvegardeImpossible;
+    //  Ajout de la méthode pour mettre à jour l'administrateur d'une ligue
+    public void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible;
 }
+

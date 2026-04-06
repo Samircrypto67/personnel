@@ -188,4 +188,8 @@ void remove(Ligue ligue) throws SauvegardeImpossible
     passerelle.delete(ligue);  // Appel à la passerelle
     ligues.remove(ligue);       // Supprime de ligue 
 }
-
+//  Ajout de la méthode updateAdministrateur	
+public void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible
+{
+    passerelle.updateAdministrateur(ligue);
+}

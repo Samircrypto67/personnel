@@ -286,3 +286,28 @@ public void update(Employe employe) throws SauvegardeImpossible
 }
 
 }
+//  ecriture Administrateur 
+@Override
+public void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible
+{
+    try
+    {
+        PreparedStatement instruction = connection.prepareStatement(
+            "UPDATE ligue SET administrateur_id = ? WHERE id = ?"
+        );
+
+        if (ligue.getAdministrateur() != null)
+            instruction.setInt(1, ligue.getAdministrateur().getId());
+        else
+            instruction.setNull(1, java.sql.Types.INTEGER);
+
+        instruction.setInt(2, ligue.getId());
+
+        instruction.executeUpdate();
+    }
+    catch(SQLException e)
+    {
+        e.printStackTrace();
+        throw new SauvegardeImpossible(e);
+    }
+}
