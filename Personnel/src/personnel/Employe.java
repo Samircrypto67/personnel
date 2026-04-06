@@ -20,13 +20,46 @@ public class Employe implements Serializable, Comparable<Employe> {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
-    public String getPrenom() { return prenom; }
+    //  Ajout de la méthode setNom pour permettre la modification du nom d'un employé
+    public void setNom(String nom) {
+    this.nom = nom;
+    try {
+        gestion.update(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+public String getPrenom() { return prenom; }
+//  Ajout de la méthode setPrenom pour permettre le déclenchement de la modification du prénom d'un employé
+   public void setPrenom(String prenom) {
+    this.prenom = prenom;
+    try {
+        gestion.update(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
     public void setPrenom(String prenom) { this.prenom = prenom; }
     public String getMail() { return mail; }
-    public void setMail(String mail) { this.mail = mail; }
+    //  Ajout de la méthode setMail pour permettre déclenchement de la modification du mail d'un employé
+   public void setMail(String mail) {
+    this.mail = mail;
+    try {
+        gestion.update(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
     public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    //  Ajout de la méthode setPassword pour permettre le déclenchement de la modification du mot de passe d'un employé
+  public void setPassword(String password) {
+    this.password = password;
+    try {
+        gestion.update(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
     public Ligue getLigue() { return ligue; }
     public GestionPersonnel getGestionPersonnel() { return gestion; }
 
@@ -42,4 +75,12 @@ public class Employe implements Serializable, Comparable<Employe> {
 
     @Override
     public String toString() { return nom + " " + prenom + " (" + mail + ")"; }
+}
+//  Ajout de la méthode remove pour permettre la suppression d'un employé
+public void remove() {
+    try {
+        gestion.remove(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 }

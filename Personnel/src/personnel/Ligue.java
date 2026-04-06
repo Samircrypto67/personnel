@@ -25,3 +25,21 @@ public class Ligue implements Comparable<Ligue> {
         return id + " - " + nom;
     }
 }
+// Ajout de la méthode setNom pour permettre le déclenchement de la modification du nom d'une ligue
+public void setNom(String nom) {
+    this.nom = nom;
+    try {
+        gp.update(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+// Ajout de la méthode remove pour permettre le déclenchement de la suppression d'une ligue
+public void remove() {
+    try {
+        gp.remove(this);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
