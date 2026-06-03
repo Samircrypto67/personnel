@@ -1,120 +1,203 @@
 Maquettes Interface Graphique
-    Utilisateur:
 
+Utilisateur :
 Samir Crypto
 
 Objectif
 
-    Créer une interface graphique pour gérer :
+Créer une interface graphique permettant de gérer :
 
-    .les ligues
-    .les employés
-    .les administrateurs
+    -les ligues
+    -les employés
+    -les administrateurs
+    -les comptes utilisateurs
+
 1. Fenêtre de connexion
-    Contenu :
-    .Champ login
-    .Champ mot de passe
-    .Bouton "Se connecter"
-    .Message d'erreur si incorrecte
-    .Redirection selon role:
-        .Admin(root)
-        .Utilisateur(Employé)
-Fonction :
+Contenu
+    /Champ Login
+    /Champ Mot de passe
+    /Bouton Se connecter
+    /Bouton Quitter
 
-    Permet à l'utilisateur (root ou employé) de se connecter.
+    Message d'erreur en cas d'identifiants incorrects
+
+Fonction: Permet à un utilisateur de se connecter :
+
+    ROOT
+    Administrateur de ligue
+    Employé
+
+Après authentification, l'utilisateur est redirigé vers son espace correspondant.
 
 2. Fenêtre principale
-    Contenu :
-    /Liste des ligues
-    .Bouton "Gérer les ligues"
-    .Bouton "Gérer les employés"
-    .Bouton "Se déconnecter"
-Fonction :
+Contenu
+    /Bouton Gestion des ligues
+    /Bouton Gestion des employés
+    /Bouton Définir administrateur
+    /Bouton Mon profil
+    /Bouton Déconnexion
+    /Bouton Quitter
 
-    Afficher et gérer les ligues.
+Fonction: Fenêtre centrale permettant d'accéder aux différentes fonctionnalités de l'application.
 
-3.Fenêtre Liste  des ligues
-    Contenu:
-    .num_ligue
-    .nom
- actions:
-    .Bouton Ajouter ligue
-    .Bouton Modifier ligue
-    .Bouton supprimer ligue
+3. Fenêtre Liste des ligues
+Contenu
 
-4. Fenêtre ajouter/modifier Ligue
-    Contenu :
-    .Champ nom
-    .Bouton "Valider"
-    .Bouton "Annuler"
+Tableau des ligues :
+
+    Numéro de ligue
+    Nom de la ligue
+    Administrateur
+
+    Actions
+    Bouton Ajouter ligue
+    Bouton Modifier ligue
+    Bouton Supprimer ligue
+    Bouton Retour
+
+Fonction: Afficher l'ensemble des ligues enregistrées.
+
+4. Fenêtre Ajouter / Modifier une ligue
+Contenu
+    Champ Nom de la ligue
+    Actions
+    Bouton Valider
+    Bouton Annuler
 Fonction:
-.Ajout:champ vide
-.Modification: champ pré-rempli avec les données de la ligue sélectionnée
+    Ajout
 
-5. Fenêtre gestion des employés
-    Contenu :
-    .Liste des employés
-    .Bouton "Ajouter employé"
-    .Bouton "Modifier employé"
-    .Bouton "Supprimer employé"
-Fonction :
+Le champ est vide.
 
-    Permet de gérer les employés d’une ligue.
+    Modification
+
+Le champ est pré-rempli avec les informations de la ligue sélectionnée.
+
+5. Fenêtre Gestion des employés
+Contenu
+
+    Liste des employés :
+
+    Identifiant
+    Nom
+    Prénom
+    Mail
+    Ligue
+    Actions
+        Bouton Ajouter employé
+        Bouton Modifier employé
+        Bouton Supprimer employé
+        Bouton Retour
+Fonction: Permet de gérer les employés d'une ligue.
 
 6. Fenêtre Liste des employés
-    Contenu :
-    .Champ nom
-    .Champ prénom
-    .Champ mail
-    .Champ mot de passe
-    .date arrivée
-    .date départ
-    .Ligue associée
-actions:
-    .Bouton Ajouter un employé
-    .Bouton Modifier employé
-    .Bouton supprimer employé
+Contenu
 
-7. Fenêtre ajouter/modifier employé
-    Contenu :
-    .Champ nom
-    .Champ prénom
-    .Champ mail
-    .Champ mot de passe
-    .date arrivée
-    .date départ
-    .Ligue déroulante Ligue
-    .bouton "valider"
-    .bouton "annuler"
+Pour chaque employé :
 
-8. Fenêtre admin ligue
-    Contenu :
-    .Liste des employés:
-        .num_employe
-        .nom
-        .mail
-        .ligue
-    .Bouton "Définir administrateur"
+    Numéro employé
+    Nom
+    Prénom
+    Mail
+    Date d'arrivée
+    Date de départ
+    Ligue associée
+    Actions
+        Bouton Ajouter
+        Bouton Modifier
+        Bouton Supprimer
+        Bouton Retour
+Fonction: Afficher l'ensemble des employés enregistrés.
 
-6. Gestion du root
-Fonction :
-    -Accès à toutes les ligues
-    -Peut gérer tous les employés
+7. Fenêtre Ajouter / Modifier un employé
+Contenu
+    Champ Nom
+    Champ Prénom
+    Champ Mail
+    Champ Mot de passe
+    Champ Date d'arrivée
+    Champ Date de départ
+    Liste déroulante des ligues
+    Actions
+        Bouton Valider
+        Bouton Annuler
+        Fonction
+        Ajout
+        Date d'arrivée remplie automatiquement avec la date du jour.
+        Date de départ facultative.
+        Modification
 
-7. Gestion du ROOT
-Accès :
-accessible uniquement aux employés ayant des droits d'administrations
+Les champs sont pré-remplis avec les informations de l'employé.
 
-contenu:
-    .liste des employés:
-        .num_employe
-        .nom
-        .mail
-        .Ligue administrée
+8. Fenêtre Définir administrateur
+Contenu
 
-Le root peut :
+Liste des employés :
 
--attribuer une ligue à administrer à un employé
--Ajouter / modifier / supprimer toutes les ligues
--Gérer tous les employés
--Définir les administrateurs
+    Numéro employé
+    Nom
+    Prénom
+    Mail
+    Ligue
+    Actions
+    Bouton Définir administrateur
+    Bouton Retirer administrateur
+    Bouton Retour
+Fonction: Associer un employé comme administrateur d'une ligue.
+
+9. Fenêtre Profil utilisateur
+Contenu
+    Nom
+    Prénom
+    Mail
+    Ligue
+    Date d'arrivée
+    Date de départ
+    Actions
+    Bouton Modifier mot de passe
+    Bouton Retour
+Fonction: Permet à un utilisateur de consulter ses informations personnelles.
+
+10. Gestion du ROOT
+Accès
+
+Accessible uniquement au compte ROOT.
+
+    Le ROOT peut
+    Ajouter une ligue
+    Modifier une ligue
+    Supprimer une ligue
+    Ajouter un employé
+    Modifier un employé
+    Supprimer un employé
+    Définir un administrateur
+    Retirer un administrateur
+    Consulter toutes les ligues
+    Consulter tous les employés
+11. Gestion de l'administrateur de ligue
+Accès
+
+Accessible uniquement aux employés désignés administrateurs.
+
+    L'administrateur peut
+    Consulter sa ligue
+    Consulter les employés de sa ligue
+    Ajouter un employé dans sa ligue
+    Modifier un employé de sa ligue
+    Supprimer un employé de sa ligue
+    Restrictions
+    Ne peut pas supprimer une ligue
+    Ne peut pas créer une ligue
+    Ne peut pas définir un autre administrateur
+12. Gestion de l'employé
+Accès
+
+Accessible à tous les employés.
+
+    L'employé peut
+    Se connecter
+    Consulter son profil
+    Modifier son mot de passe
+    Restrictions
+    Ne peut pas modifier les ligues
+    Ne peut pas gérer les employés
+    Ne peut pas définir d'administrateur

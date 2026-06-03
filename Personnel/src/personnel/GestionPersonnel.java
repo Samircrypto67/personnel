@@ -1,195 +1,140 @@
 package personnel;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Gestion du personnel. Un seul objet de cette classe existe.
- * Il n'est pas possible d'instancier directement cette classe, 
- * la méthode {@link #getGestionPersonnel getGestionPersonnel} 
- * le fait automatiquement et retourne toujours le même objet.
- * Dans le cas où {@link #sauvegarder()} a été appelé lors 
- * d'une exécution précédente, c'est l'objet sauvegardé qui est
- * retourné.
- */
+public class GestionPersonnel {
 
-public class GestionPersonnel implements Serializable
-{
-	private static final long serialVersionUID = -105283113987886425L;
-	private static GestionPersonnel gestionPersonnel = null;
-	private SortedSet<Ligue> ligues;
-	private Employe root = new Employe(this, null, "root", "", "", "toor");
-	public final static int SERIALIZATION = 1, JDBC = 2, 
-			TYPE_PASSERELLE = JDBC;  
-	private static Passerelle passerelle = TYPE_PASSERELLE == JDBC ? new jdbc.JDBC() : new serialisation.Serialization();	
-	
-	/**
-	 * Retourne l'unique instance de cette classe.
-	 * Crée cet objet s'il n'existe déjà.
-	 * @return l'unique objet de type {@link GestionPersonnel}.
-	 */
-	
-	public static GestionPersonnel getGestionPersonnel()
-	{
-		if (gestionPersonnel == null)
-		{
-			gestionPersonnel = passerelle.getGestionPersonnel();
-			if (gestionPersonnel == null)
-				gestionPersonnel = new GestionPersonnel();
-		}
-		return gestionPersonnel;
-	}
-
-	public GestionPersonnel()
-	{
-		if (gestionPersonnel != null)
-			throw new RuntimeException("Vous ne pouvez créer qu'une seuls instance de cet objet.");
-		ligues = new TreeSet<>();
-		gestionPersonnel = this;
-	}
-	
-	public void sauvegarder() throws SauvegardeImpossible
-	{
-		passerelle.sauvegarderGestionPersonnel(this);
-	}
-	
-	/**
-	 * Retourne la ligue dont administrateur est l'administrateur,
-	 * null s'il n'est pas un administrateur.
-	 * @param administrateur l'administrateur de la ligue recherchée.
-	 * @return la ligue dont administrateur est l'administrateur.
-	 */
-	
-	public Ligue getLigue(Employe administrateur)
-	{
-		if (administrateur.estAdmin(administrateur.getLigue()))
-			return administrateur.getLigue();
-		else
-			return null;
-	}
-
-	/**
-	 * Retourne toutes les ligues enregistrées.
-	 * @return toutes les ligues enregistrées.
-	 */
-	
-	public SortedSet<Ligue> getLigues()
-	{
-		return Collections.unmodifiableSortedSet(ligues);
-	}
-
-	public Ligue addLigue(String nom) throws SauvegardeImpossible
-	{
-		Ligue ligue = new Ligue(this, nom); 
-		ligues.add(ligue);
-		return ligue;
-	}
-	
-	public Ligue addLigue(int id, String nom)
-	{
-		Ligue ligue = new Ligue(this, id, nom);
-		ligues.add(ligue);
-		return ligue;
-	}
-
-	void remove(Ligue ligue)
-	{
-		ligues.remove(ligue);
-	}
-	
-	int insert(Ligue ligue) throws SauvegardeImpossible
-	{
-		return passerelle.insert(ligue);
-	}
-
-	/**
-	 * Retourne le root (super-utilisateur).
-	 * @return le root.
-	 */
-	
-	public Employe getRoot()
-	{
-		return root;
-	}
-}
-//Ajout de la méthode insert(Employe)
-
-public class GestionPersonnel
-{
     private Passerelle passerelle;
+    private List<Ligue> ligues;
     private Employe root;
 
-    public int insert(Employe employe) throws SauvegardeImpossible
-    {
-        return passerelle.insert(employe);
-    }
-
-    package personnel;
-
-public class GestionPersonnel
-{
-    private Passerelle passerelle;
-    private Employe root;
-
-    public GestionPersonnel(Passerelle passerelle)
-    {
+    
+    public GestionPersonnel(Passerelle passerelle) {
         this.passerelle = passerelle;
+        this.ligues = new ArrayList<>();
+    }
+    
+
+    // ROOT
+    public void addRoot(int id, String nom, String prenom, String mail, String password) {
+        this.root = new Employe(this, null, id, nom, prenom, mail, password);
     }
 
-    //  Créer root
-    public void addRoot(String nom, String prenom, String mail, String password) throws SauvegardeImpossible
+    public Employe getRoot() {
+        // 🔥 SÉCURITÉ : si root absent → créer un root temporaire
+        if (root == null) {
+            root = new Employe(this, null, -1, "root", "", "root", "toor");
+        }
+        return root;
+    }
+
+    // LIGUES
+    public Ligue addLigue(int id, String nom) {
+        Ligue ligue = new Ligue(this, id, nom);
+        ligues.add(ligue);
+        return ligue;
+    }
+
+    public Ligue addLigue(String nom) {
+        Ligue ligue = new Ligue(this, -1, nom);
+        try {
+            int id = passerelle.insert(ligue);
+            ligue.setId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ligues.add(ligue);
+        return ligue;
+    }
+
+    public List<Ligue> getLigues() {
+        return ligues;
+    }
+
+    public void remove(Ligue ligue) {
+        try {
+            passerelle.delete(ligue);
+            ligues.remove(ligue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Ligue getLigueById(int id) {
+        return ligues.stream().filter(l -> l.getId() == id).findFirst().orElse(null);
+    }
+
+    // EMPLOYES
+    public Employe addEmploye(String nom, String prenom, String mail, String password, Ligue ligue) {
+        Employe e = new Employe(this, 
+        		ligue, 
+        		-1, 
+        		nom, 
+        		prenom, 
+        		mail, 
+        		password);
+        e.setDateArrivee(
+        	    new java.sql.Date(
+        	        System.currentTimeMillis()
+        	    )
+        	);
+        try {
+            int id = passerelle.insert(e);
+            e.setId(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (ligue != null) ligue.addEmploye(e);
+        return e;
+    }
+
+    public Employe getEmployeById(int id) {
+        for (Ligue l : ligues) {
+            for (Employe e : l.getEmployes()) {
+                if (e.getId() == id) return e;
+            }
+        }
+        return null;
+    }
+    public void remove(Employe employe) {
+        try {
+            passerelle.delete(employe);
+
+            if (employe.getLigue() != null) {
+                employe.getLigue().removeEmploye(employe);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateAdministrateur(Ligue ligue)
     {
-        if (root != null && root.getId() != -1) return; // root déjà existant
-        root = new Employe(this, null, nom, prenom, mail, password);
-        int rootId = passerelle.insert(root); // insertion en BDD
-        root.setId(rootId);
+        try
+        {
+            passerelle.updateAdministrateur(ligue);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    //  Créer root depuis BDD 
-    public void addRoot(int id, String nom, String prenom, String mail, String password)
-    {
-        root = new Employe(this, null, id, nom, prenom, mail, password);
+    public void update(Employe employe) {
+        try {
+            passerelle.update(employe);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-	
-	//ajout de la méthode insert(Employe)
-    public Employe getRoot() { return root; }
-
-    public int insert(Employe employe) throws SauvegardeImpossible
-    {
-        return passerelle.insert(employe);
+    public void update(Ligue ligue) {
+        try {
+            passerelle.update(ligue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-	}
-
-	//ajoute de la methode update 
-	public void update(Ligue ligue) throws SauvegardeImpossible
-	{
-		passerelle.update(ligue);
-	}
-}
-
-//  Ajout de la méthode update(Employe)
-public void update(Employe employe) throws SauvegardeImpossible
-{
-    passerelle.update(employe);
-}
-
-//ajput de lappel pour supprimer un employé
-public void remove(Employe employe) throws SauvegardeImpossible
-{
-	//appel de la méthode delete de la passerelle
-	passerelle.delete(employe);
-}
-
-//supprimer une ligue
-void remove(Ligue ligue) throws SauvegardeImpossible
-{
-    passerelle.delete(ligue);  // Appel à la passerelle
-    ligues.remove(ligue);       // Supprime de ligue 
-}
-//  Ajout de la méthode updateAdministrateur	
-public void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible
-{
-    passerelle.updateAdministrateur(ligue);
-}
+    }
+    

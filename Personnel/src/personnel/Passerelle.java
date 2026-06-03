@@ -1,16 +1,30 @@
-public interface Passerelle 
-{
-    public GestionPersonnel getGestionPersonnel();
-    public void sauvegarderGestionPersonnel(GestionPersonnel gestionPersonnel) throws SauvegardeImpossible;
-    public int insert(Ligue ligue) throws SauvegardeImpossible;
-	// nouvelle méthode ajoutée pour insérer un employé dans la base de données
-    public int insert(Employe employe) throws SauvegardeImpossible; 
-	//mise à jour de liguedd
-	public  int update(Ligue ligue) throws SauvegardeImpossible;
-    
-    // 🔹 Nouvelle méthode pour modifier un employé
-    public void update(Employe employe) throws SauvegardeImpossible;
-    //  Ajout de la méthode pour mettre à jour l'administrateur d'une ligue
-    public void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible;
-}
+package personnel;
 
+public interface Passerelle {
+
+    GestionPersonnel getGestionPersonnel();
+
+    void sauvegarderGestionPersonnel(GestionPersonnel gestionPersonnel)
+            throws SauvegardeImpossible;
+
+    int insert(Ligue ligue)
+            throws SauvegardeImpossible;
+
+    int insert(Employe employe)
+            throws SauvegardeImpossible;
+
+    void update(Ligue ligue)
+            throws SauvegardeImpossible;
+
+    void update(Employe employe)
+            throws SauvegardeImpossible;
+
+    void updateAdministrateur(Ligue ligue)
+            throws SauvegardeImpossible;
+
+    void delete(Ligue ligue)
+            throws SauvegardeImpossible;
+
+    void delete(Employe employe)
+            throws SauvegardeImpossible;
+}

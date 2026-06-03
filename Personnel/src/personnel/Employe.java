@@ -1,13 +1,23 @@
 package personnel;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 public class Employe implements Serializable, Comparable<Employe> {
-    private int id = -1;
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -350718842227171921L;
+	private int id = -1;
     private String nom, prenom, mail, password;
     private Ligue ligue;
     private GestionPersonnel gestion;
 
+    private Date dateArrivee;
+    private Date dateDepart;
+
+    // CONSTRUCTEUR NORMAL
     public Employe(GestionPersonnel gestion, Ligue ligue, String nom, String prenom, String mail, String password) {
         this.gestion = gestion;
         this.ligue = ligue;
@@ -17,55 +27,77 @@ public class Employe implements Serializable, Comparable<Employe> {
         this.password = password;
     }
 
+    // CONSTRUCTEUR AVEC ID (IMPORTANT JDBC)
+    public Employe(GestionPersonnel gestion, Ligue ligue, int id, String nom, String prenom, String mail, String password) {
+        this(gestion, ligue, nom, prenom, mail, password);
+        this.id = id;
+    }
+
+    // GETTERS
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
     public String getNom() { return nom; }
-    //  Ajout de la méthode setNom pour permettre la modification du nom d'un employé
-    public void setNom(String nom) {
-    this.nom = nom;
-    try {
-        gestion.update(this);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-public String getPrenom() { return prenom; }
-//  Ajout de la méthode setPrenom pour permettre le déclenchement de la modification du prénom d'un employé
-   public void setPrenom(String prenom) {
-    this.prenom = prenom;
-    try {
-        gestion.update(this);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-    public void setPrenom(String prenom) { this.prenom = prenom; }
+    public String getPrenom() { return prenom; }
     public String getMail() { return mail; }
-    //  Ajout de la méthode setMail pour permettre déclenchement de la modification du mail d'un employé
-   public void setMail(String mail) {
-    this.mail = mail;
-    try {
-        gestion.update(this);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
     public String getPassword() { return password; }
-    //  Ajout de la méthode setPassword pour permettre le déclenchement de la modification du mot de passe d'un employé
-  public void setPassword(String password) {
-    this.password = password;
-    try {
-        gestion.update(this);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
     public Ligue getLigue() { return ligue; }
-    public GestionPersonnel getGestionPersonnel() { return gestion; }
 
-    public boolean estRoot() { return this == gestion.getRoot(); }
-    public boolean checkPassword(String pwd) { return password.equals(pwd); }
+    public Date getDateArrivee() { return dateArrivee; }
+    public Date getDateDepart() { return dateDepart; }
 
+    // SETTERS
+    public void setId(int id) { this.id = id; }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+        try { gestion.update(this); } catch(Exception e){}
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+        try { gestion.update(this); } catch(Exception e){}
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+        try { gestion.update(this); } catch(Exception e){}
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+        try { gestion.update(this); } catch(Exception e){}
+    }
+
+    public void setDateArrivee(Date d)
+    {
+        this.dateArrivee = d;
+
+        try
+        {
+            gestion.update(this);
+        }
+        catch(Exception e)
+        {
+        }
+    }
+
+    public void setDateDepart(Date d)
+    {
+        this.dateDepart = d;
+
+        try
+        {
+            gestion.update(this);
+        }
+        catch(Exception e)
+        {
+        }
+    }
+    public boolean estRoot() {
+        return this == gestion.getRoot();
+    }
+    public boolean checkPassword(String pwd) {
+        return this.password.equals(pwd);
+    }
     @Override
     public int compareTo(Employe o) {
         int cmp = nom.compareTo(o.nom);
@@ -74,13 +106,22 @@ public String getPrenom() { return prenom; }
     }
 
     @Override
-    public String toString() { return nom + " " + prenom + " (" + mail + ")"; }
-}
-//  Ajout de la méthode remove pour permettre la suppression d'un employé
-public void remove() {
-    try {
-        gestion.remove(this);
-    } catch (Exception e) {
-        e.printStackTrace();
+    public String toString()
+    {
+        return nom + " "
+                + prenom
+                + " ("
+                + mail
+                + ") Arrivée="
+                + dateArrivee
+                + " Départ="
+                + dateDepart;
+    }
+    public void remove() {
+        try {
+            gestion.remove(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
